@@ -3,7 +3,7 @@ package ip91.chui.oleh;
 import ip91.chui.oleh.service.IntervalInfoUtil;
 import ip91.chui.oleh.service.SequenceInfoUtil;
 import ip91.chui.oleh.service.generator.UniformGenerator;
-import ip91.chui.oleh.util.UtilTest;
+import ip91.chui.oleh.util.X2Critical;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -11,16 +11,19 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static ip91.chui.oleh.util.UtilTest.*;
+import static ip91.chui.oleh.util.UtilTest.JOINED_EXPECTED_FR;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UniformGeneratorTest {
 
-  private static final double X2_CRITICAL = 27.6;
   private static final int INTERVAL_COUNT = 20;
   private static final int SIZE = 10000;
+  private static final int PARAM_COUNT = 2;
 
   private UniformGenerator generator;
 
@@ -37,7 +40,20 @@ class UniformGeneratorTest {
     List<Integer> actualFr = getActualFrequencyList(sequence);
     List<Integer> expectedFr = getExpectedFrequencyList();
 
-    final double X2 = UtilTest.processX2(actualFr, expectedFr, INTERVAL_COUNT);
+    System.out.println("------------------");
+    System.out.println("actualFr (before joining): " + actualFr);
+    System.out.println("expectedFr (before joining): " + expectedFr);
+
+    Map<String, List<Integer>> joinedFr = joinIntervalsIfNeed(actualFr, expectedFr);
+    final int NEW_INTERVAL_COUNT = joinedFr.get(JOINED_ACTUAL_FR).size();
+
+    System.out.println("actualFr (after joining): " + joinedFr.get(JOINED_ACTUAL_FR));
+    System.out.println("expectedFr (after joining): " + joinedFr.get(JOINED_EXPECTED_FR));
+
+    final double X2 = processX2(joinedFr.get(JOINED_ACTUAL_FR), joinedFr.get(JOINED_EXPECTED_FR));
+    final double X2_CRITICAL = X2Critical.getX2Critical(NEW_INTERVAL_COUNT, PARAM_COUNT);
+
+    System.out.println("X2: " + X2 + " | X2_CRITICAL: " + X2_CRITICAL);
 
     assertTrue(X2 < X2_CRITICAL);
   }

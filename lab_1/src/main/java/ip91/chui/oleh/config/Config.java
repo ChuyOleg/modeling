@@ -4,7 +4,7 @@ import ip91.chui.oleh.model.GenType;
 
 public class Config {
 
-  public static final GenType GEN_TYPE = GenType.UNIFORM;
+  public static final GenType GEN_TYPE = GenType.EXP;
   public static final int SEQ_SIZE = 10000;
   public static final int EXP_LAMBDA = 2;
   public static final int NORMAL_ALPHA = 3;

@@ -1,4 +1,4 @@
-package ip91.chui.oleh;
+package ip91.chui.oleh.service.element;
 
 public class Exit extends Element {
 

@@ -1,7 +1,8 @@
-package ip91.chui.oleh;
+package ip91.chui.oleh.service.element;
 
 import ip91.chui.oleh.model.Distribution;
 import ip91.chui.oleh.model.ElementChancePair;
+import ip91.chui.oleh.service.FunRand;
 import lombok.Getter;
 import lombok.Setter;
 

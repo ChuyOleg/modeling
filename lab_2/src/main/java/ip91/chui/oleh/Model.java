@@ -1,72 +1,53 @@
 package ip91.chui.oleh;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Model {
 
-  private ArrayList<Element> list = new ArrayList<>();
+  private static final String RESULT_TITLE = "\n_____________RESULT_____________";
+  private static final String TIME_EVENT_MSG = "\nEvent time for ";
+  private static final String TIME_MSG = ", time = ";
+
+  private final List<Element> list;
   double tnext, tcurr;
-  int event;
+  Element event;
 
-  public Model(ArrayList<Element> elements) {
-    list = elements;
-    tnext = 0.0;
-    event = 0;
-    tcurr = tnext;
+  public Model(List<Element> elements) {
+    this.list = elements;
   }
-
 
   public void simulate(double time) {
 
     while (tcurr < time) {
       tnext = Double.MAX_VALUE;
-      for (Element e : list) {
-        if (e.getTnext() < tnext) {
-          tnext = e.getTnext();
-          event = e.getId();
 
+      list.forEach(el -> {
+        if (el.getTnext() < tnext) {
+          tnext = el.getTnext();
+          event = el;
         }
-      }
-      System.out.println("\nIt's time for event in " +
-          list.get(event).getName() +
-          ", time =   " + tnext);
-      for (Element e : list) {
-        e.doStatistics(tnext - tcurr);
-      }
+      });
+      System.out.println(TIME_EVENT_MSG + event.getName() + TIME_MSG + tnext);
+
+      list.forEach(el -> el.doStatistics(tnext - tcurr));
       tcurr = tnext;
-      for (Element e : list) {
-        e.setTcurr(tcurr);
-      }
-      list.get(event).outAct();
-      for (Element e : list) {
-        if (e.getTnext() == tcurr) {
-          e.outAct();
-        }
-      }
+      list.forEach(el -> el.setTcurr(tcurr));
+
+      event.outAct();
+      list.stream().filter(el -> el.getTnext() == tcurr).forEach(Element::outAct);
+
       printInfo();
     }
     printResult();
   }
 
-  public void printInfo() {
-    for (Element e : list) {
-      e.printInfo();
-    }
+  private void printInfo() {
+    list.forEach(Element::printInfo);
   }
 
-  public void printResult() {
-    System.out.println("\n-------------RESULTS-------------");
-    for (Element e : list) {
-      e.printResult();
-      if (e instanceof Process) {
-        Process p = (Process) e;
-        System.out.println("mean length of queue = " +
-            p.getMeanQueue() / tcurr
-            + "\nfailure probability  = " +
-            p.getFailure() / (double) p.getQuantity());
-      }
-    }
+  private void printResult() {
+    System.out.println(RESULT_TITLE);
+    list.forEach(Element::printResult);
   }
-
 
 }

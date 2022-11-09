@@ -1,178 +1,106 @@
 package ip91.chui.oleh;
 
+import ip91.chui.oleh.model.Distribution;
+import ip91.chui.oleh.model.ElementChancePair;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
 public class Element {
+
+  protected static final String STAR = "* ";
+  protected static final String ARROW = " =>";
+  protected static final String VERTICAL_LINE = " | ";
+  protected static final String SUB_DESC_START = "   ";
+  private static final String ID_PREFIX = "element";
+  protected static final String QUANTITY_MSG = " quantity: ";
+  protected static final String STATE_MSG = " state: ";
+  protected static final String T_NEXT_MSG = " tnext: ";
+  private static final String TOKEN_MOVE_FROM_TO = "The Token has moved from <%s> to <%s>%n";
+  private static final String TOKEN_COMPLETE_CYCLE = "The Token has completed the processing cycle";
 
   private String name;
   private double tnext;
   private double delayMean, delayDev;
-  private String distribution;
+  private Distribution distribution;
   private int quantity;
   private double tcurr;
   private int state;
-  private Element nextElement;
+  private List<ElementChancePair> nextElements;
   private static int nextId=0;
   private int id;
 
-
-  public Element(){
-
-    tnext = Double.MAX_VALUE;
-    delayMean = 1.0;
-    distribution = "exp";
-    tcurr = tnext;
-    state=0;
-    nextElement=null;
-    id = nextId;
+  public Element() {
+    this.tnext = Double.MAX_VALUE;
+    this.delayMean = 1.0;
+    this.distribution = Distribution.EXP;
+    this.tcurr = tnext;
+    this.state = 0;
+    this.nextElements = new ArrayList<>();
+    this.id = nextId;
     nextId++;
-    name = "element"+id;
+    this.name = ID_PREFIX + this.id;
   }
-  public Element(double delay){
-    name = "anonymus";
-    tnext = 0.0;
-    delayMean = delay;
-    distribution = "";
-    tcurr = tnext;
-    state=0;
-    nextElement=null;
-    id = nextId;
-    nextId++;
-    name = "element"+id;
+
+  public Element(double delay) {
+    this();
+    this.delayMean = delay;
   }
-  public Element(String nameOfElement, double delay){
-    name = nameOfElement;
-    tnext = 0.0;
-    delayMean = delay;
-    distribution = "exp";
-    tcurr = tnext;
-    state=0;
-    nextElement=null;
-    id = nextId;
-    nextId++;
-    name = "element"+id;
+
+  public Element(String nameOfElement, double delay) {
+    this(delay);
+    this.name = nameOfElement;
   }
 
   public double getDelay() {
-    double delay = getDelayMean();
-    if ("exp".equalsIgnoreCase(getDistribution())) {
-      delay = FunRand.Exp(getDelayMean());
-    } else {
-      if ("norm".equalsIgnoreCase(getDistribution())) {
-        delay = FunRand.Norm(getDelayMean(),
-            getDelayDev());
-      } else {
-        if ("unif".equalsIgnoreCase(getDistribution())) {
-          delay = FunRand.Unif(getDelayMean(),
-              getDelayDev());
-        } else {
-          if("".equalsIgnoreCase(getDistribution()))
-            delay = getDelayMean();
-        }
-      }
-    }
-    return delay;
-  }
-
-
-
-
-  public double getDelayDev() {
-    return delayDev;
-  }
-
-  public void setDelayDev(double delayDev) {
-    this.delayDev = delayDev;
-  }
-
-  public String getDistribution() {
-    return distribution;
-  }
-
-  public void setDistribution(String distribution) {
-    this.distribution = distribution;
-  }
-
-
-  public int getQuantity() {
-    return quantity;
-  }
-
-  public double getTcurr() {
-    return tcurr;
-  }
-
-  public void setTcurr(double tcurr) {
-    this.tcurr = tcurr;
-  }
-
-  public int getState() {
-    return state;
-  }
-
-  public void setState(int state) {
-    this.state = state;
-  }
-
-  public Element getNextElement() {
-    return nextElement;
-  }
-
-  public void setNextElement(Element nextElement) {
-    this.nextElement = nextElement;
+    return switch (distribution) {
+      case EXP -> FunRand.Exp(getDelayMean());
+      case NORMAL -> FunRand.Norm(getDelayMean(), getDelayDev());
+      case UNIFORM -> FunRand.Unif(getDelayMean(), getDelayDev());
+      case MEAN_VALUE -> getDelayMean();
+    };
   }
 
   public void inAct() {
 
   }
-  public void outAct(){
-    quantity++;
+
+  public void outAct() {
+    this.quantity++;
   }
 
-  public double getTnext() {
-    return tnext;
-  }
-
-
-  public void setTnext(double tnext) {
-    this.tnext = tnext;
-  }
-
-  public double getDelayMean() {
-    return delayMean;
-  }
-
-  public void setDelayMean(double delayMean) {
-    this.delayMean = delayMean;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
+  protected void callNextElementInActByChance() {
+    double chance = Math.random();
+    double chanceSum = 0;
+    for (ElementChancePair pair : this.getNextElements()) {
+      chanceSum += pair.getChance();
+      if (chance < chanceSum) {
+        System.out.printf(TOKEN_MOVE_FROM_TO, this.getName(), pair.getElement().getName());
+        pair.getElement().inAct();
+        return;
+      }
+    }
+    System.out.println(TOKEN_COMPLETE_CYCLE);
   }
 
   public void printResult(){
-    System.out.println(getName()+ "  quantity = "+ quantity);
+    System.out.println(STAR + name + ARROW + QUANTITY_MSG + quantity);
   }
 
   public void printInfo(){
-    System.out.println(getName()+ " state= " +state+
-        " quantity = "+ quantity+
-        " tnext= "+tnext);
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
+    System.out.println(
+        STAR + name + ARROW + STATE_MSG + state + VERTICAL_LINE +
+        QUANTITY_MSG + quantity + VERTICAL_LINE +
+        T_NEXT_MSG + tnext
+    );
   }
 
   public void doStatistics(double delta){
 
   }
-
 
 }

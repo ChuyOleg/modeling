@@ -24,8 +24,8 @@ public class FunRand {
   /**
    * Generates a random value according to a uniform distribution
    *
-   * @param timeMin
-   * @param timeMax
+   * @param timeMin an "a" parameter based on formula
+   * @param timeMax a "c" parameter based on formula
    * @return a random value according to a uniform distribution
    */
   public static double Unif(double timeMin, double timeMax) {
@@ -41,8 +41,8 @@ public class FunRand {
   /**
    * Generates a random value according to a normal (Gauss) distribution
    *
-   * @param timeMean
-   * @param timeDeviation
+   * @param timeMean an "a" parameter based on formula
+   * @param timeDeviation a "ksi" parameter based of formula
    * @return a random value according to a normal (Gauss) distribution
    */
   public static double Norm(double timeMean, double timeDeviation) {

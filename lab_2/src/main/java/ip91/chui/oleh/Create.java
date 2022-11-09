@@ -2,16 +2,18 @@ package ip91.chui.oleh;
 
 public class Create extends Element {
 
-  public Create(double delay) {
-    super(delay);
+  public Create(String name, double delay) {
+    super(name, delay);
+    super.setTcurr(0);
+    super.setTnext(0);
   }
 
   @Override
   public void outAct() {
     super.outAct();
     super.setTnext(super.getTcurr() + super.getDelay());
-    super.getNextElement().inAct();
-  }
 
+    this.callNextElementInActByChance();
+  }
 
 }

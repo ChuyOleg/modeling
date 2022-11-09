@@ -18,7 +18,13 @@ public class NormalGenerator {
 
   private double calculateMu() {
     return IntStream.range(1, 13)
-        .mapToDouble((idx) -> Math.random())
+        .mapToDouble((idx) -> {
+          double a = 0;
+          while (a == 0) {
+            a = Math.random();
+          }
+          return a;
+        })
         .sum() - 6;
   }
 

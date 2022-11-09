@@ -11,7 +11,12 @@ public class ExpGenerator {
   }
 
   private double generateSingleNum(double lambda) {
-    return -1 / lambda * Math.log(Math.random());
+    double a = 0;
+    while (a == 0) {
+      a = Math.random();
+    }
+
+    return -1 / lambda * Math.log(a);
   }
 
 }

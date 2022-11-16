@@ -1,5 +1,6 @@
-package ip91.chui.oleh.service.element;
+package ip91.chui.oleh.bank.service.element;
 
+import ip91.chui.oleh.bank.model.Distribution;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class Device extends Element {
 
-  private static final String MEAN_LOAD_MSG = "\n      Mean load of device = ";
+  private static final String MEAN_LOAD_MSG = "\n      Mean load of cashier = ";
   private static final String INFO_START = "   ";
 
   private final Process parentProcess;
@@ -15,6 +16,13 @@ public class Device extends Element {
 
   public Device(String name, double delay, Process parentProcess) {
     super(name, delay);
+    this.parentProcess = parentProcess;
+  }
+
+  public Device(String name, double delay, double delayDev, Process parentProcess) {
+    super(name, delay);
+    super.setDistribution(Distribution.NORMAL);
+    super.setDelayDev(delayDev);
     this.parentProcess = parentProcess;
   }
 

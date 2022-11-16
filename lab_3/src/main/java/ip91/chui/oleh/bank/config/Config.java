@@ -1,4 +1,4 @@
-package ip91.chui.oleh.config;
+package ip91.chui.oleh.bank.config;
 
 public class Config {
 

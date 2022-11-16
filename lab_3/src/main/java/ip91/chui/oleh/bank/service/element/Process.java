@@ -1,4 +1,4 @@
-package ip91.chui.oleh.service.element;
+package ip91.chui.oleh.bank.service.element;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,19 +11,22 @@ public class Process extends Element {
 
   private static final String MAX_QUEUE_MSG = "Max_Queue: ";
   private static final String QUEUE_MSG = "Queue: ";
-  private static final String FAILURE_MSG = "Failure: ";
   private static final String MEAN_LENGTH_OF_QUEUE_MSG = "Mean length of queue = ";
-  private static final String FAILURE_PROBABILITY_MSG = "\n   Failure probability = ";
-  private static final String MEAN_LOAD_MSG = "\n   Mean load of process = ";
+  private static final String MEAN_LOAD_MSG = "\n   Mean load of cashier = ";
   private static final String DEVICE_HAS_BEEN_CHOSEN = "Device: <%s> has been chosen%n";
+  private static final String DEVICE_HAS_COMPLETED_WORK = "Device <%s> has completed his work%n";
   private static final String EMPTY_DEVICE_NOT_FOUND = "Empty device hasn't been found";
+  private static final String CAR_MOVED_TO_QUEUE = "The Car has moved to queue";
+  private static final String MEAN_DEPARTURE_INTERVAL_MSG = "\n   Mean departure interval = ";
 
   private int queue;
   private int maxQueue;
   private int failure;
   private double meanQueue;
-  private double meanLoad;
   private List<Device> devices;
+  private double departureSum;
+  private double departureCount;
+  private double lastDeparture;
 
   public Process(String name, int maxQueue) {
     super(name, 0);
@@ -45,6 +48,7 @@ public class Process extends Element {
 
     System.out.println(EMPTY_DEVICE_NOT_FOUND);
     if (getQueue() < getMaxQueue()) {
+      System.out.println(CAR_MOVED_TO_QUEUE);
       setQueue(getQueue() + 1);
     } else {
       failure++;
@@ -55,9 +59,10 @@ public class Process extends Element {
   public void outAct() {
     devices.forEach(device -> {
       if (device.getTnext() == this.getTnext()) {
-        System.out.printf(DEVICE_HAS_BEEN_CHOSEN, device.getName());
+        System.out.printf(DEVICE_HAS_COMPLETED_WORK, device.getName());
         setQuantity(getQuantity() + 1);
         device.outAct();
+        processDepartureStats();
         this.callNextElementInActByChance();
       }
     });
@@ -75,8 +80,7 @@ public class Process extends Element {
     super.printInfo();
     System.out.println(
         SUB_DESC_START + MAX_QUEUE_MSG + this.getMaxQueue() + VERTICAL_LINE +
-        QUEUE_MSG + this.getQueue() + VERTICAL_LINE +
-        FAILURE_MSG + this.getFailure()
+        QUEUE_MSG + this.getQueue()
     );
 
     devices.forEach(Device::printInfo);
@@ -87,7 +91,7 @@ public class Process extends Element {
     super.printResult();
     System.out.println(
         SUB_DESC_START + MEAN_LENGTH_OF_QUEUE_MSG + (this.meanQueue / super.getTcurr()) +
-        FAILURE_PROBABILITY_MSG + (this.failure / (double) super.getQuantity())
+        MEAN_DEPARTURE_INTERVAL_MSG + (this.departureSum / this.departureCount)
     );
 
     devices.forEach(Device::printResult);
@@ -97,6 +101,14 @@ public class Process extends Element {
   public void doStatistics(double delta) {
     meanQueue = getMeanQueue() + queue * delta;
     devices.forEach(device -> device.doStatistics(delta));
+  }
+
+  private void processDepartureStats() {
+    if (lastDeparture != 0) {
+      departureSum += super.getTcurr() - lastDeparture;
+    }
+    lastDeparture = super.getTcurr();
+    departureCount++;
   }
 
   @Override

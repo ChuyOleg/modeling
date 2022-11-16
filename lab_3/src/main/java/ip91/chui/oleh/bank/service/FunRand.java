@@ -1,4 +1,4 @@
-package ip91.chui.oleh.service;
+package ip91.chui.oleh.bank.service;
 
 import java.util.Random;
 

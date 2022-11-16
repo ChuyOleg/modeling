@@ -1,8 +1,8 @@
-package ip91.chui.oleh.service.element;
+package ip91.chui.oleh.bank.service.element;
 
-import ip91.chui.oleh.model.Distribution;
-import ip91.chui.oleh.model.ElementChancePair;
-import ip91.chui.oleh.service.FunRand;
+import ip91.chui.oleh.bank.model.Distribution;
+import ip91.chui.oleh.bank.model.ElementChancePair;
+import ip91.chui.oleh.bank.service.FunRand;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +21,7 @@ public class Element {
   protected static final String QUANTITY_MSG = " quantity: ";
   protected static final String STATE_MSG = " state: ";
   protected static final String T_NEXT_MSG = " tnext: ";
-  private static final String TOKEN_MOVE_FROM_TO = "The Token has moved from <%s> to <%s>%n";
-  private static final String TOKEN_COMPLETE_CYCLE = "The Token has completed the processing cycle";
+  protected static final String TOKEN_MOVE_FROM_TO = "The Car has moved from <%s> to <%s>%n";
 
   private String name;
   private double tnext;
@@ -39,7 +38,6 @@ public class Element {
     this.tnext = Double.MAX_VALUE;
     this.delayMean = 1.0;
     this.distribution = Distribution.EXP;
-    this.tcurr = tnext;
     this.state = 0;
     this.nextElements = new ArrayList<>();
     this.id = nextId;
@@ -85,7 +83,6 @@ public class Element {
         return;
       }
     }
-    System.out.println(TOKEN_COMPLETE_CYCLE);
   }
 
   public void printResult(){

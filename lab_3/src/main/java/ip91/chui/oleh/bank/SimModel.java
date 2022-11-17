@@ -16,26 +16,24 @@ public class SimModel {
 
   private static final double MAX_CHANCE = 1.0;
   private static final double NO_CHANCE = -1.0;
+  private static final double CREATOR_DELAY = 0.5;
+  private static final double FIRST_CLIENT_TIME = 0.1;
+  private static final double CASHIER_DELAY = 1;
+  private static final double CASHIER_DELAY_DEV = 0.3;
+  private static final int CASHIER_MAX_QUEUE = 3;
+  private static final int CASHIER_START_QUEUE = 2;
 
   public static void main(String[] args) {
-    final double creatorDelay = 0.5;
-    final double firstClientTime = 0.1;
-
-    final double cashierDelay = 1;
-    final double cashierDelayDev = 0.3;
-    final int cashierMaxQueue = 3;
-    final int cashierStartQueue = 2;
-
-    Create creator = new Create("CREATOR", creatorDelay);
-    Process process_1 = new Process("CASHIER_1",  cashierMaxQueue);
-    Process process_2 = new Process("CASHIER_2", cashierMaxQueue);
+    Create creator = new Create("CREATOR", CREATOR_DELAY);
+    Process process_1 = new Process("CASHIER_1",  CASHIER_MAX_QUEUE);
+    Process process_2 = new Process("CASHIER_2", CASHIER_MAX_QUEUE);
     Exit exit = new Exit("Exit");
 
     List<Device> p1Devices = List.of(
-        new Device("CASHIER_1_DEVICE_1", cashierDelay, cashierDelayDev, process_1)
+        new Device("CASHIER_1_DEVICE_1", CASHIER_DELAY, CASHIER_DELAY_DEV, process_1)
     );
     List<Device> p2Devices = List.of(
-        new Device("CASHIER_2_DEVICE_1", cashierDelay, cashierDelayDev, process_2)
+        new Device("CASHIER_2_DEVICE_1", CASHIER_DELAY, CASHIER_DELAY_DEV, process_2)
     );
 
     process_1.setDevices(p1Devices);
@@ -53,11 +51,11 @@ public class SimModel {
     ));
 
     // прибуття першого клієнта заплановано на момент часу 0,1 од. часу;
-    creator.setTnext(firstClientTime);
+    creator.setTnext(FIRST_CLIENT_TIME);
 
     // у кожній черзі очікують по два автомобіля.
-    process_1.setQueue(cashierStartQueue);
-    process_2.setQueue(cashierStartQueue);
+    process_1.setQueue(CASHIER_START_QUEUE);
+    process_2.setQueue(CASHIER_START_QUEUE);
 
     // обидва касири зайняті
     process_1.inAct();

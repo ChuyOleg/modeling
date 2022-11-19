@@ -91,7 +91,7 @@ public class Process extends Element {
     super.printResult();
     System.out.println(
         SUB_DESC_START + MEAN_LENGTH_OF_QUEUE_MSG + (this.meanQueue / super.getTcurr()) +
-        MEAN_DEPARTURE_INTERVAL_MSG + (this.departureSum / this.departureCount)
+        MEAN_DEPARTURE_INTERVAL_MSG + (this.departureSum / (this.departureCount - 1))
     );
 
     devices.forEach(Device::printResult);

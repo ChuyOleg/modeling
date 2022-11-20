@@ -34,7 +34,7 @@ public class Process extends Element {
   public void inAct() {
     for (Device device : devices) {
       if (device.getState() == 0) {
-        System.out.printf(DEVICE_HAS_BEEN_CHOSEN, device.getName());
+//        System.out.printf(DEVICE_HAS_BEEN_CHOSEN, device.getName());
         device.inAct();
         if (device.getTnext() < getTnext()) {
           setTnext(device.getTnext());
@@ -43,7 +43,7 @@ public class Process extends Element {
       }
     }
 
-    System.out.println(EMPTY_DEVICE_NOT_FOUND);
+//    System.out.println(EMPTY_DEVICE_NOT_FOUND);
     if (getQueue() < getMaxQueue()) {
       setQueue(getQueue() + 1);
     } else {
@@ -55,7 +55,7 @@ public class Process extends Element {
   public void outAct() {
     devices.forEach(device -> {
       if (device.getTnext() == this.getTnext()) {
-        System.out.printf(DEVICE_HAS_BEEN_CHOSEN, device.getName());
+//        System.out.printf(DEVICE_HAS_BEEN_CHOSEN, device.getName());
         setQuantity(getQuantity() + 1);
         device.outAct();
         this.callNextElementInActByChance();

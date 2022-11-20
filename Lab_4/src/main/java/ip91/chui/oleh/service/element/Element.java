@@ -38,7 +38,7 @@ public class Element {
   public Element() {
     this.tnext = Double.MAX_VALUE;
     this.delayMean = 1.0;
-    this.distribution = Distribution.EXP;
+    this.distribution = Distribution.MEAN_VALUE;
     this.tcurr = tnext;
     this.state = 0;
     this.nextElements = new ArrayList<>();
@@ -80,7 +80,7 @@ public class Element {
     for (ElementChancePair pair : this.getNextElements()) {
       chanceSum += pair.getChance();
       if (chance < chanceSum) {
-        System.out.printf(TOKEN_MOVE_FROM_TO, this.getName(), pair.getElement().getName());
+//        System.out.printf(TOKEN_MOVE_FROM_TO, this.getName(), pair.getElement().getName());
         pair.getElement().inAct();
         return;
       }

@@ -29,7 +29,7 @@ public class Model {
           event = el;
         }
       });
-      System.out.println(TIME_EVENT_MSG + event.getName() + TIME_MSG + tnext);
+//      System.out.println(TIME_EVENT_MSG + event.getName() + TIME_MSG + tnext);
 
       list.forEach(el -> el.doStatistics(tnext - tcurr));
       tcurr = tnext;
@@ -38,9 +38,9 @@ public class Model {
       event.outAct();
       list.stream().filter(el -> el.getTnext() == tcurr).forEach(Element::outAct);
 
-      printInfo();
+//      printInfo();
     }
-    printResult();
+//    printResult();
   }
 
   private void printInfo() {

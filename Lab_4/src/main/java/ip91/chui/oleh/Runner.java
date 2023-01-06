@@ -16,8 +16,8 @@ public class Runner {
 
     LineChartEx lineChartEx = new LineChartEx();
 
-    experimentEvaluation(SMO_N_LIST, lineChartEx);
-//    theoreticalEvaluation(SMO_N_LIST, lineChartEx);
+//    experimentEvaluation(SMO_N_LIST, lineChartEx);
+    theoreticalEvaluation(SMO_N_LIST, lineChartEx);
   }
 
   private static void experimentEvaluation(List<Integer> SMO_N_LIST, LineChartEx lineChartEx) {

@@ -4,6 +4,6 @@ public class Config {
 
   private Config() {}
 
-  public static final double IMITATION_TIME = 1000;
+  public static final double IMITATION_TIME = 100;
 
 }
